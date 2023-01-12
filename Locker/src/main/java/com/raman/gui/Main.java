@@ -42,9 +42,6 @@ public class Main extends Application
 	private ImageView icon;
 	private Button btn_close, btn_yes, btn_no;
 	
-	private static double xOffset = 0;
-	private static double yOffset = 0;
-	
 	@Override
 	public void start(Stage primaryStage) 
 	{
@@ -52,7 +49,7 @@ public class Main extends Application
 		{
 			//Create the root pane
 			root = new BorderPane();
-			root.setTop(panel_header());
+			root.setTop(panel_header(primaryStage));
 			root.setCenter(panel_body());
 			root.setBottom(panel_footer());
 			//root.getChildren().addAll(panel_header(), panel_body(), panel_footer());
@@ -72,32 +69,25 @@ public class Main extends Application
 			primaryStage.setResizable(false);
 			primaryStage.getIcons().add(new Image("com.raman.gui/icons/logo.png"));
 			primaryStage.initStyle(StageStyle.TRANSPARENT);
-			
-			dragableWindow(primaryStage);
-
-			
-			Rectangle rectangle = new Rectangle(200, 200, 100, 100);
-			rectangle.setArcWidth(20);
-			rectangle.setArcHeight(20);
-			
-			
-			
-	        primaryStage.show();
 	        
+	        primaryStage.show();
+	               
 	        /******  To centre screen must be called after .show() ******/
 	        RenderingServices.centreWindow(primaryStage);
 			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
+	}	
 
-	private BorderPane panel_header() 
+	private BorderPane panel_header(Stage primaryStage) 
 	{
 
 		BorderPane pane = new BorderPane();
 		pane.getStyleClass().add("panel_header");
+		
+		//Make the window draggable from the header.
+		RenderingServices.dragableWindow(primaryStage, pane);
 		
 		/*############### Default Message Type Icon ###############*/
 		ic_info = new Image("com.raman.gui/icons/info.png");
@@ -207,49 +197,20 @@ public class Main extends Application
 
 	private void add_button()
 	{
-		
-		
-		
-		
 		Button btn = new Button();
         btn.setText("Click me!");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+        btn.setOnAction(new EventHandler<ActionEvent>() 
+        {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Hello, JavaFX!");
             }
         });
-        
         root.getChildren().add(btn);
-	}
+	}	
 	
-	
-	
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
 		launch(args);
 	}
-	
-	/**
-     * The stage is set to undecorated style, therefore this method
-     * allow user to drag the window if wanted using mouse click-drag.
-     */
-	private void dragableWindow(Stage stage)
-	{
-		root.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                xOffset = event.getSceneX();
-                yOffset = event.getSceneY();
-            }
-        });
-		root.setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
-            }
-        });
-	}
-	
-	
 }
