@@ -3,11 +3,13 @@
 .rootPane
 {
 	-fx-background-color: #eae0de;
+	-fx-background-radius: 15;
 }
 
 .panel_header
 {
 	-fx-background-color: #8a9302;
+	-fx-background-radius:  15 15 0 0;
 }
 
 .panel_body

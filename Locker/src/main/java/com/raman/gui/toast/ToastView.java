@@ -2,6 +2,8 @@ package com.raman.gui.toast;
 
 import com.raman.fxfunctions.RenderingServices;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -16,8 +18,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
-public class ToastView 
+public class ToastView extends Stage
 {
 	//Panels
 	private BorderPane root;
@@ -26,31 +31,33 @@ public class ToastView
 	private Image ic_info;
 	private ImageView icon;
 	private Button btn_close, btn_yes, btn_no;
+	private EventHandler<ActionEvent> eventHandler;
 
-	protected Scene scene;
-	
-	public ToastView() 
+	public ToastView(Stage ownerWidnow, EventHandler<ActionEvent> eventHandler) 
 	{
+		this.eventHandler = eventHandler;
+		
 		//Create the root pane
 		root = new BorderPane();
-
-		//Create the Scene
-		//Set maximum width of the scene and empty height with expandable size.
-		scene = new Scene(root, 300, Region.USE_COMPUTED_SIZE);
-		scene.getStylesheets().add("com.raman.gui/style.css");			
-		scene.setFill(Color.TRANSPARENT);
-		
-		/** The panel_header must be called after initiating the scene because it
-		 	 take the scene as argument and can't be null.  */
 		root.setTop(panel_header());
 		root.setCenter(panel_body());
 		root.setBottom(panel_footer());
-		//root.getChildren().addAll(panel_header(), panel_body(), panel_footer());
 		root.getStyleClass().add("rootPane");
 		//Setting minimum and maximum height for the root, works with the Region... define in the scene.
 		root.setMinHeight(170);
-		root.setMaxHeight(280);
+		root.setMaxHeight(280);	
 		
+		//Create the Scene
+		//Set maximum width of the scene and empty height with expandable size.
+		Scene scene = new Scene(root, 300, Region.USE_COMPUTED_SIZE);
+		scene.getStylesheets().add("com.raman.gui/style.css");			
+		scene.setFill(Color.TRANSPARENT);
+	
+		initModality(Modality.APPLICATION_MODAL);
+		initOwner(ownerWidnow);
+		initStyle(StageStyle.TRANSPARENT);
+		
+		setScene(scene);
 	}	
 
 	private BorderPane panel_header() 
@@ -60,7 +67,7 @@ public class ToastView
 		pane.getStyleClass().add("panel_header");
 		
 		//Make the window draggable from the header.
-		RenderingServices.dragableWindow(scene, pane);
+		RenderingServices.dragableWindow(this, pane);
 		
 		/*############### Default Message Type Icon ###############*/
 		ic_info = new Image("com.raman.gui/icons/info.png");
@@ -101,6 +108,8 @@ public class ToastView
 		pane.setRight(btn_close);
 		//Centre the button vertically.
 		BorderPane.setAlignment(btn_close, Pos.CENTER);
+		//Add event handler
+		btn_close.setOnAction(eventHandler);
 		
 		//Set margin between nodes
 		BorderPane.setMargin(icon, new Insets(2, 0, 2, 3));
@@ -153,15 +162,21 @@ public class ToastView
         btn_yes = new Button("Yes");
         btn_yes.setPrefSize(82, 25);
         btn_yes.getStyleClass().add("btn_yes");
-        
+        //Add event handler
+        btn_yes.setOnAction(eventHandler);
+      		
         btn_no = new Button("No");
         btn_no.setPrefSize(82, 25);
         btn_no.getStyleClass().add("btn_no");
-        
+        //Add event handler
+        btn_no.setOnAction(eventHandler);
+      		
         Button btn_retry = new Button("Retry");
         btn_retry.setPrefSize(82, 25);
         btn_retry.getStyleClass().add("btn_retry");
-
+        //Add event handler
+        btn_retry.setOnAction(eventHandler);
+      		
         // Group up Buttons
         footer_panel.getChildren().addAll(btn_no, btn_yes, btn_retry);
         
@@ -170,17 +185,25 @@ public class ToastView
 	
 	protected void loadToast(String title, String message)
 	{
-		setMessage(message);
-		setTitle(title);
+		setToastMessage(message);
+		setToastTitle(title);
 	}
 	
-	private void setMessage(String message)
+	private void setToastMessage(String message)
 	{
 		txt_message.setText(message);
 	}
 	
-	private void setTitle(String title)
+	private void setToastTitle(String title)
 	{
 		txt_title.setText(title);
+	}	
+	
+	protected void showToast()
+	{
+        //This shows the current window, show() could'nt be overridden
+        show();
+		/******  To centre screen must be called after .show() ******/
+        RenderingServices.centreWindow(this);
 	}
 }
