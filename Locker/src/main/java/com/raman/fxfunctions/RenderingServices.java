@@ -3,6 +3,7 @@ package com.raman.fxfunctions;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -30,7 +31,7 @@ public class RenderingServices
      * The stage is set to undecorated style, therefore this method
      * allow user to drag the window if wanted using mouse click-drag.
      */
-	public static void dragableWindow(Stage stage, Node node)
+	public static void dragableWindow(Scene scene, Node node)
 	{
 		node.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
@@ -42,8 +43,8 @@ public class RenderingServices
 		node.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                stage.setX(event.getScreenX() - xOffset);
-                stage.setY(event.getScreenY() - yOffset);
+            	scene.getWindow().setX(event.getScreenX() - xOffset);
+            	scene.getWindow().setY(event.getScreenY() - yOffset);
             }
         });
 	}

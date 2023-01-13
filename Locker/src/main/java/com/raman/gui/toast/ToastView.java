@@ -1,38 +1,23 @@
-package com.raman.gui;
+package com.raman.gui.toast;
 
 import com.raman.fxfunctions.RenderingServices;
 
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.geometry.VPos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-public class Toast extends Application 
+public class ToastView 
 {
 	//Panels
 	private BorderPane root;
@@ -41,53 +26,41 @@ public class Toast extends Application
 	private Image ic_info;
 	private ImageView icon;
 	private Button btn_close, btn_yes, btn_no;
+
+	protected Scene scene;
 	
-	@Override
-	public void start(Stage primaryStage) 
+	public ToastView() 
 	{
-		try 
-		{
-			//Create the root pane
-			root = new BorderPane();
-			root.setTop(panel_header(primaryStage));
-			root.setCenter(panel_body());
-			root.setBottom(panel_footer());
-			//root.getChildren().addAll(panel_header(), panel_body(), panel_footer());
-			root.getStyleClass().add("rootPane");
-			//Setting minimum and maximum height for the root, works with the Region... define in the scene.
-			root.setMinHeight(170);
-			root.setMaxHeight(280);
-			
-			//Create the Scene
-			//Set maximum width of the scene and empty height with expandable size.
-			Scene scene = new Scene(root, 300, Region.USE_COMPUTED_SIZE);
-			scene.getStylesheets().add("com.raman.gui/style.css");			
-			scene.setFill(Color.TRANSPARENT);
-			
-			//Set up Stage
-			primaryStage.setScene(scene);
-			primaryStage.setResizable(false);
-			primaryStage.getIcons().add(new Image("com.raman.gui/icons/logo.png"));
-			primaryStage.initStyle(StageStyle.TRANSPARENT);
-	        
-	        primaryStage.show();
-	               
-	        /******  To centre screen must be called after .show() ******/
-	        RenderingServices.centreWindow(primaryStage);
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
+		//Create the root pane
+		root = new BorderPane();
+
+		//Create the Scene
+		//Set maximum width of the scene and empty height with expandable size.
+		scene = new Scene(root, 300, Region.USE_COMPUTED_SIZE);
+		scene.getStylesheets().add("com.raman.gui/style.css");			
+		scene.setFill(Color.TRANSPARENT);
+		
+		/** The panel_header must be called after initiating the scene because it
+		 	 take the scene as argument and can't be null.  */
+		root.setTop(panel_header());
+		root.setCenter(panel_body());
+		root.setBottom(panel_footer());
+		//root.getChildren().addAll(panel_header(), panel_body(), panel_footer());
+		root.getStyleClass().add("rootPane");
+		//Setting minimum and maximum height for the root, works with the Region... define in the scene.
+		root.setMinHeight(170);
+		root.setMaxHeight(280);
+		
 	}	
 
-	private BorderPane panel_header(Stage primaryStage) 
+	private BorderPane panel_header() 
 	{
 
 		BorderPane pane = new BorderPane();
 		pane.getStyleClass().add("panel_header");
 		
 		//Make the window draggable from the header.
-		RenderingServices.dragableWindow(primaryStage, pane);
+		RenderingServices.dragableWindow(scene, pane);
 		
 		/*############### Default Message Type Icon ###############*/
 		ic_info = new Image("com.raman.gui/icons/info.png");
@@ -194,23 +167,20 @@ public class Toast extends Application
         
         return footer_panel;
 	}
-
-	private void add_button()
-	{
-		Button btn = new Button();
-        btn.setText("Click me!");
-        btn.setOnAction(new EventHandler<ActionEvent>() 
-        {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello, JavaFX!");
-            }
-        });
-        root.getChildren().add(btn);
-	}	
 	
-	public static void main(String[] args) 
+	protected void loadToast(String title, String message)
 	{
-		launch(args);
+		setMessage(message);
+		setTitle(title);
+	}
+	
+	private void setMessage(String message)
+	{
+		txt_message.setText(message);
+	}
+	
+	private void setTitle(String title)
+	{
+		txt_title.setText(title);
 	}
 }
