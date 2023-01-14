@@ -76,7 +76,7 @@ public class ToastView extends Stage
 		icon.setFitHeight(35);
 		icon.setFitWidth(35);
 		icon.setPreserveRatio(true);
-		//Centre the button vertically.
+		//Centre the icon vertically.
 		BorderPane.setAlignment(icon, Pos.CENTER);
 		pane.setLeft(icon);
 		

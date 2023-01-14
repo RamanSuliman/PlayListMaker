@@ -8,16 +8,5 @@
 
 .panel_header
 {
-	-fx-background-color: #8a9302;
-	-fx-background-radius:  15 15 0 0;
-}
-
-.panel_body
-{
-	 -fx-background-color: #249995; 
-}
-
-.footer_panel
-{
-	/* -fx-background-color: #e2f92f; */
+	-fx-padding: 10;
 }
