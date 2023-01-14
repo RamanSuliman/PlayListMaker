@@ -10,3 +10,23 @@
 {
 	-fx-padding: 10;
 }
+
+.icon_application 
+{
+    -fx-image: url("icons/info.png");
+}
+
+.btn_close
+{
+	-fx-image: url("icons/info.png");
+}
+
+.btn_minimise
+{
+	-fx-image: url("icons/info.png");
+}
+
+.btn_removeAll
+{
+	-fx-image: url("icons/info.png");
+}

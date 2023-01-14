@@ -7,10 +7,14 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -20,11 +24,10 @@ public class FileProtectorView
 	private Scene scene;
 	private BorderPane root;
 	private Label txt_title;
-	private Image ic_application;
 	private ImageView icon;
-	private Button btn_minimise, btn_close, btn_encrypt, btn_save_dec, btn_save_enc;
-	private Button btn_removeAll, btn_removeSelected, btn_loadFiles, btn_undo, btn_attach;
-	private EventHandler<ActionEvent> eventHandler;
+	private ImageView btn_minimise, btn_close, btn_encrypt, btn_save_dec, btn_save_enc;
+	private ImageView btn_removeAll, btn_removeSelected, btn_loadFiles, btn_undo, btn_attach;
+	private EventHandler<MouseEvent> eventHandler;
 	
 	public FileProtectorView()
 	{
@@ -54,26 +57,10 @@ public class FileProtectorView
 		panel_header.setRight(container);
 		
 		/*############### Application Close Button ###############*/
-		btn_close = new Button("X");
-		//Define button size.
-		btn_close.setPrefSize(30, 8);
-		//Define CSS class for this button.
-		btn_close.getStyleClass().add("btn_close");
-		//Position the button text on the centre
-		btn_close.setAlignment(Pos.CENTER);
-		//Add event handler
-		btn_close.setOnAction(eventHandler);
+		btn_close = getButton(25, 25, "btn_close");
 		
 		/*############### Application Minimise Button ###############*/
-		btn_minimise = new Button("-");
-		//Define button size.
-		btn_minimise.setPrefSize(30, 8);
-		//Define CSS class for this button.
-		btn_minimise.getStyleClass().add("btn_minimise");
-		//Position the button text on the centre
-		btn_minimise.setAlignment(Pos.CENTER);
-		//Add event handler
-		btn_minimise.setOnAction(eventHandler);
+		btn_minimise = getButton(25, 25, "btn_minimise");
 		
 		container.getChildren().addAll(btn_minimise, btn_close);
 		
@@ -94,8 +81,8 @@ public class FileProtectorView
 		panel_header.setCenter(txt_title);
 	
 		/*############### Default Message Type Icon ###############*/
-		ic_application = new Image("com.raman.gui/icons/info.png");
-		icon = new ImageView(ic_application);
+		icon = new ImageView();
+		icon.getStyleClass().add("icon_application");
 		//Set width and height, if not define using setPreserveRatio() display image in original size.
 		icon.setFitHeight(35);
 		icon.setFitWidth(35);
@@ -109,8 +96,33 @@ public class FileProtectorView
 
 	private Node panel_body() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		HBox panel_body= new HBox();
+		panel_body.getStyleClass().add("panel_body");
+		
+		/*############### Left Content Editing Tools ###############*/
+		VBox left_container = new VBox();
+		left_container.getStyleClass().add("left_container");
+		
+		// Remove All Button
+		btn_removeAll = getButton(25, 25, "btn_removeAll");
+
+		// Remove Selected File Button
+		btn_removeSelected = getButton(25, 25, "btn_removeSelected");
+		
+		/*############### File Container ###############*/
+		TextArea textArea = new TextArea();
+		textArea.setPrefRowCount(20);
+		textArea.setPrefColumnCount(50);
+
+		ScrollPane scrollPane = new ScrollPane();
+		scrollPane.setContent(textArea);
+		scrollPane.setFitToWidth(true);
+		//Make the bar invisible
+		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		
+		
+		
+		return panel_body;
 	}
 
 	private Node panel_footer() 
@@ -119,9 +131,18 @@ public class FileProtectorView
 		return null;
 	}
 
-	private void setButtonProperties(Button button)
+	private ImageView getButton(int width, int height, String css)
 	{
+		ImageView  button = new ImageView();
+		//Define button size.
+		button.setFitHeight(width);
+		button.setFitWidth(height);
+		//Define CSS class for this button.
+		button.getStyleClass().add(css);
+		//Add event handler
+		button.setOnMouseClicked(eventHandler);
 		
+		return button;
 	}
 	
 	protected Scene getScene()
