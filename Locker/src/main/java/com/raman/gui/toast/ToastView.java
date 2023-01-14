@@ -50,7 +50,7 @@ public class ToastView extends Stage
 		//Create the Scene
 		//Set maximum width of the scene and empty height with expandable size.
 		Scene scene = new Scene(root, 300, Region.USE_COMPUTED_SIZE);
-		scene.getStylesheets().add("com.raman.gui/style.css");			
+		scene.getStylesheets().add("com.raman.gui/toast.css");			
 		scene.setFill(Color.TRANSPARENT);
 	
 		initModality(Modality.APPLICATION_MODAL);
