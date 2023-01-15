@@ -12,6 +12,8 @@ public class Controller implements EventHandler<ActionEvent>
 	public Controller()
 	{
 		view = new View();
+		view.getLoadFileButton().setOnAction(this);
+		view.getCloseButton().setOnAction(this);
 	}
 
 	public Scene getScene()
@@ -24,11 +26,11 @@ public class Controller implements EventHandler<ActionEvent>
 		Button button = (Button) event.getSource();
 		if(button == view.getLoadFileButton())
 		{
-			
+			System.out.println("Load button");
 		}
 		else if(button == view.getCloseButton())
 		{
-			
+			System.out.println("Close button");
 		}
 		else
 		{
