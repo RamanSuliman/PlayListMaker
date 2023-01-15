@@ -1,6 +1,9 @@
 package main;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.event.ActionEvent;
@@ -38,12 +41,17 @@ public class Controller implements EventHandler<ActionEvent>
 			DirectoryChooser directoryChooser = new DirectoryChooser();
 			directoryChooser.setInitialDirectory(new File("C:\\Users\\raman\\OneDrive\\Desktop\\New_Music"));
             File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
-            if(selectedDirectory == null){
-                // No directory selected
-            }else{
+            if(selectedDirectory != null)
+            {
+            	//Get the path of chosen directory
                 String directory_path = selectedDirectory.getAbsolutePath();
-                loadFilesIntoList(selectedDirectory.listFiles());
-
+                //Determine whether or not there are valid files in the given folder path.
+                boolean isThereFiles = loadFilesIntoList(selectedDirectory.listFiles());
+                if(isThereFiles)
+                	createPlayList(directory_path);
+            }else
+            {
+            	
             }
 		}
 		else if(button == view.getCloseButton())
@@ -66,18 +74,43 @@ public class Controller implements EventHandler<ActionEvent>
         	if(!veryfiyExtenion(file.getName()))
         		continue;
         	files.add(file);
-        	System.out.println(file.getName());
         }
         if(files.isEmpty())
         	return false;
 		return true;
 	}
 	
-	private boolean createPlayList()
+	private boolean createPlayList(String path)
 	{
-		
+		try{
+			//Adding the PlayList file into the directory path.
+			String saveLocation = path + "\\" + playList; 
+			BufferedWriter writer = new BufferedWriter(new FileWriter(saveLocation));
+			writer.write("#EXTM3U"); // M3U file header
+            writer.newLine();
+            for(File file : files)
+            {
+            	String song = path + "\\" + file.getName();
+            	System.out.println(song);
+            	//Write file with full path into the playList.
+            	writer.write(song);
+            	writer.newLine();
+            }
+            
+            writer.close();
+		}catch (IOException e) {
+            e.printStackTrace();
+        }
 		return false;
 	}
+	
+	private void addPlayListInfo(BufferedWriter writer) throws IOException
+	{
+		writer.write("#PLAYLIST:My Beloved Songs");
+		writer.write("#EXTGENRE:Ramanize");
+		writer.write("#EXTGENRE:Ramanize");
+	}
+	
 	
 	private boolean veryfiyExtenion(String file)
 	{
