@@ -2,16 +2,20 @@ package com.raman.FileProtector;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -24,6 +28,7 @@ public class FileProtectorView
 	private Scene scene;
 	private BorderPane root;
 	private Label txt_title;
+	private ListView<Label> fileContainer;
 	private ImageView icon;
 	private ImageView btn_minimise, btn_close, btn_encrypt, btn_save_dec, btn_save_enc;
 	private ImageView btn_removeAll, btn_removeSelected, btn_loadFiles, btn_undo, btn_attach;
@@ -99,32 +104,58 @@ public class FileProtectorView
 		HBox panel_body= new HBox();
 		panel_body.getStyleClass().add("panel_body");
 		
-		/*############### Left Content Editing Tools ###############*/
+				/*############### Left Content Editing Tools ###############*/
 		VBox left_container = new VBox();
+		left_container.setPadding(new Insets(0,0,0,10));
 		left_container.getStyleClass().add("left_container");
 		
 		// Remove All Button
 		btn_removeAll = getButton(25, 25, "btn_removeAll");
-
 		// Remove Selected File Button
 		btn_removeSelected = getButton(25, 25, "btn_removeSelected");
+		left_container.getChildren().addAll(btn_removeAll, btn_removeSelected);
 		
-		/*############### File Container ###############*/
-		TextArea textArea = new TextArea();
-		textArea.setPrefRowCount(20);
-		textArea.setPrefColumnCount(50);
+				/*############### File Container ###############*/
+		fileContainer= new ListView<Label>();		
+		fileContainer.setPrefSize(300, 100);
+		fileContainer.getStyleClass().add("fileContainer");
+		fileContainer.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
+	        @Override
+	        public void handle(MouseEvent event) 
+	        {
+	            System.out.println("clicked on " + fileContainer.getSelectionModel().getSelectedItem());
+	        }
+	    });
+		
+		panel_body.getStyleClass().add("fileContainer");
+		
 		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setContent(textArea);
+		panel_body.getStyleClass().add("scrollPane");
+		scrollPane.setContent(fileContainer);
 		scrollPane.setFitToWidth(true);
+		scrollPane.setFitToHeight(true);
 		//Make the bar invisible
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		HBox.setMargin(scrollPane, new Insets(0,10,0,10));
+			
+				/*############### Left Content Editing Tools ###############*/
+		VBox right_container = new VBox();
+		right_container.setPadding(new Insets(0,10,0,0));
+		right_container.getStyleClass().add("right_container");
 		
-		
+		// Remove All Button
+		btn_loadFiles = getButton(25, 25, "btn_loadFiles");
+		// Remove Selected File Button
+		btn_undo = getButton(25, 25, "btn_undo");
+		right_container.getChildren().addAll(btn_loadFiles, btn_undo);
+				
+		panel_body.getChildren().addAll(left_container, scrollPane, right_container);
 		
 		return panel_body;
 	}
-
+	
 	private Node panel_footer() 
 	{
 		// TODO Auto-generated method stub
@@ -150,3 +181,70 @@ public class FileProtectorView
 		return scene;
 	}
 }
+
+/*
+			### assign Files icons to each label
+		FileChooser fileChooser = new FileChooser();
+		File selectedFile = fileChooser.showOpenDialog(primaryStage);
+		
+		if (selectedFile != null) {
+		    FileSystemView view = FileSystemView.getFileSystemView();
+		    javax.swing.Icon icon = view.getSystemIcon(selectedFile);
+		    Image image = SwingFXUtils.toFXImage((BufferedImage) icon.getImage(), null);
+		    ImageView imageView = new ImageView(image);
+		    Label label = new Label();
+		    label.setGraphic(imageView);
+		}
+		
+		
+				### Restrict what files can be chosen
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.getExtensionFilters().addAll(
+		    new FileChooser.ExtensionFilter("Text Files", "*.txt"),
+		    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"),
+		    new FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.aac")
+		);
+
+*/
+
+
+/*
+	public class FileExplorer extends Application {
+	    private ListView<String> listView;
+	
+	    public static void main(String[] args) {
+	        launch(args);
+	    }
+	
+	    @Override
+	    public void start(final Stage primaryStage) {
+	        primaryStage.setTitle("File Explorer");
+	        listView = new ListView<>();
+	
+	        Button openDirButton = new Button("Open Directory");
+	        openDirButton.setOnAction(new EventHandler<ActionEvent>() {
+	            @Override
+	            public void handle(ActionEvent event) {
+	                DirectoryChooser directoryChooser = new DirectoryChooser();
+	                File selectedDirectory = directoryChooser.showDialog(primaryStage);
+	
+	                if(selectedDirectory == null){
+	                    // No directory selected
+	                }else{
+	                    listView.getItems().clear();
+	                    File[] files = selectedDirectory.listFiles();
+	                    for (File file : files) {
+	                        listView.getItems().add(file.getName());
+	                    }
+	                }
+	            }
+	        });
+	
+	        VBox vbox = new VBox();
+	        vbox.getChildren().addAll(openDirButton, listView);
+	        Scene scene = new Scene(vbox, 300, 250);
+	        primaryStage.setScene(scene);
+	        primaryStage.show();
+	    }
+	}
+*/

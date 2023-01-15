@@ -16,6 +16,11 @@
     -fx-image: url("icons/info.png");
 }
 
+.list-cell:selected
+{
+	-fx-background-color: red;
+}
+
 .btn_close
 {
 	-fx-image: url("icons/info.png");
@@ -27,6 +32,21 @@
 }
 
 .btn_removeAll
+{
+	-fx-image: url("icons/info.png");
+}
+
+.btn_removeSelected
+{
+	-fx-image: url("icons/info.png");
+}
+
+.btn_loadFiles
+{
+	-fx-image: url("icons/info.png");
+}
+
+.btn_undo
 {
 	-fx-image: url("icons/info.png");
 }
