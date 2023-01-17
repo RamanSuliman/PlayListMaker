@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -18,6 +19,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -30,9 +34,12 @@ public class FileProtectorView
 	private Label txt_title;
 	private ListView<Label> fileContainer;
 	private ImageView icon;
-	private ImageView btn_minimise, btn_close, btn_encrypt, btn_save_dec, btn_save_enc;
-	private ImageView btn_removeAll, btn_removeSelected, btn_loadFiles, btn_undo, btn_attach;
+	private Button btn_minimise, btn_close, btn_encrypt, btn_decrypt, btn_save_dec, btn_save_enc;
+	private Button btn_removeAll, btn_removeSelected, btn_loadFiles, btn_undo, btn_attach;
 	private EventHandler<MouseEvent> eventHandler;
+	private VBox box_encrypt, box_decypt;
+	private HBox box_decrypt_panel;
+	private ProgressBar progressBar;
 	
 	public FileProtectorView()
 	{
@@ -62,10 +69,10 @@ public class FileProtectorView
 		panel_header.setRight(container);
 		
 		/*############### Application Close Button ###############*/
-		btn_close = getButton(25, 25, "btn_close");
+		btn_close = getButton(25, 25, "X", "btn_close");
 		
 		/*############### Application Minimise Button ###############*/
-		btn_minimise = getButton(25, 25, "btn_minimise");
+		btn_minimise = getButton(25, 25, "-", "btn_minimise");
 		
 		container.getChildren().addAll(btn_minimise, btn_close);
 		
@@ -110,9 +117,9 @@ public class FileProtectorView
 		left_container.getStyleClass().add("left_container");
 		
 		// Remove All Button
-		btn_removeAll = getButton(25, 25, "btn_removeAll");
+		btn_removeAll = getButton(25, 25, "RM All", "btn_removeAll");
 		// Remove Selected File Button
-		btn_removeSelected = getButton(25, 25, "btn_removeSelected");
+		btn_removeSelected = getButton(25, 25, "RM S", "btn_removeSelected");
 		left_container.getChildren().addAll(btn_removeAll, btn_removeSelected);
 		
 				/*############### File Container ###############*/
@@ -146,9 +153,9 @@ public class FileProtectorView
 		right_container.getStyleClass().add("right_container");
 		
 		// Remove All Button
-		btn_loadFiles = getButton(25, 25, "btn_loadFiles");
+		btn_loadFiles = getButton(25, 25, "Load Files", "btn_loadFiles");
 		// Remove Selected File Button
-		btn_undo = getButton(25, 25, "btn_undo");
+		btn_undo = getButton(25, 25, "Undo", "btn_undo");
 		right_container.getChildren().addAll(btn_loadFiles, btn_undo);
 				
 		panel_body.getChildren().addAll(left_container, scrollPane, right_container);
@@ -156,24 +163,109 @@ public class FileProtectorView
 		return panel_body;
 	}
 	
+	/***
+	 * This method sets the footer section of the main window GUI.
+	 * @return Node Repressing layout of type HBox.
+	 */
 	private Node panel_footer() 
 	{
-		// TODO Auto-generated method stub
-		return null;
+		VBox panel_footer = new VBox();
+		panel_footer.getStyleClass().add("panel_footer");
+		panel_footer.setStyle("-fx-background-color: red;");
+		panel_footer.setAlignment(Pos.CENTER);
+		
+		//Prepare the progress bar
+		progressBar = new ProgressBar();
+		progressBar.getStyleClass().add("progressBar");
+		//Filling width
+		progressBar.prefWidthProperty().bind(panel_footer.widthProperty());
+		//VBox.setMargin(progressBar, new Insets(0, 2, 0, 2));
+		
+		panel_footer.getChildren().addAll(progressBar, setDecryptBox());
+		//panel_footer.getChildren().add(panel_footer);
+
+		return panel_footer;
 	}
 
-	private ImageView getButton(int width, int height, String css)
+	
+	private VBox setEncryptBox()
 	{
-		ImageView  button = new ImageView();
+		box_encrypt = new VBox();
+		box_encrypt.setAlignment(Pos.CENTER);
+		box_encrypt.getStyleClass().add("box_encrypt");
+
+		btn_encrypt = getButton(80, 20, "Encrypt", "btn_encrypt");
+
+		btn_save_enc = getButton(80, 20, "Save", "btn_save_enc");
+		
+		//btn_save_enc.setVisible(false);
+		
+		box_encrypt.getChildren().addAll(btn_encrypt, btn_save_enc);
+		
+		return box_encrypt;
+	}
+	
+	private VBox setDecryptBox()
+	{
+		box_decypt = new VBox();
+		box_decypt.getStyleClass().add("box_decypt");
+		box_decypt.setAlignment(Pos.CENTER);
+		
+		//Prepare the panel container that will hold attach and decrypt buttons.
+		box_decrypt_panel = new HBox();
+		box_decrypt_panel.setSpacing(10);
+		box_decrypt_panel.getStyleClass().add("box_decrypt_panel");
+		box_decrypt_panel.setAlignment(Pos.CENTER);
+		
+		//Preparing buttons
+		btn_attach = getButton(80, 20, "Attach", "btn_attach");
+		btn_decrypt = getButton(80, 20, "Decrypt", "btn_decrypt");
+		
+		//Add buttons to the horizontal panel box
+		box_decrypt_panel.getChildren().addAll(btn_attach, btn_decrypt);
+		
+		//Button for saving the decrypted files.
+		btn_save_dec = getButton(60, 20, "Save", "btn_save_dec");
+		
+		box_decypt.getChildren().addAll(box_decrypt_panel, btn_save_dec);
+		
+		return box_decypt;
+	}
+	
+	/***
+	 * This method is used to create and prepare an instance of an image button.
+	 * 
+	 * @param width Takes an integer value to define the width property.
+	 * @param height Takes an integer value to define the height property.
+	 * @return ImageView Repressing image view to be used as a button.
+	 */
+	private Button getButton(int width, int height, String text, String css)
+	{
+		Button  button = new Button(text);
 		//Define button size.
-		button.setFitHeight(width);
-		button.setFitWidth(height);
+		button.setPrefSize(width, height);
 		//Define CSS class for this button.
 		button.getStyleClass().add(css);
 		//Add event handler
 		button.setOnMouseClicked(eventHandler);
 		
 		return button;
+	}
+	
+	
+	private StackPane addLabelToImage(ImageView button, String text, String css)
+	{
+		// Create the StackPane
+		StackPane stackPane = new StackPane();
+		
+		// Create the label
+		Label label = new Label(text);
+		label.getStyleClass().add(css);
+		
+		// Add the ImageView and Label to the StackPane
+		stackPane.getChildren().addAll(button, label);
+		
+		return stackPane;
 	}
 	
 	protected Scene getScene()
