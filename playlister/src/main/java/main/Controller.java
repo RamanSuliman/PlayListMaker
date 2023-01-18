@@ -41,28 +41,18 @@ public class Controller implements EventHandler<ActionEvent>
 			DirectoryChooser directoryChooser = new DirectoryChooser();
 			//This line can be used to define the initial start up folder.
 			//directoryChooser.setInitialDirectory(new File("path"));
-            File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
-            if(selectedDirectory != null)
-            {
-            	//Get the path of chosen directory
-                String directory_path = selectedDirectory.getAbsolutePath();
-                //Determine whether or not there are valid files in the given folder path.
-                boolean isThereFiles = loadFilesIntoList(selectedDirectory.listFiles());
-                if(isThereFiles)
-                	createPlayList(directory_path);
-            }else
-            {
-            	
-            }
-		}
-		else if(button == view.getCloseButton())
-		{
+			    File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
+			    if(selectedDirectory != null)
+			    {
+				//Get the path of chosen directory
+				String directory_path = selectedDirectory.getAbsolutePath();
+				//Determine whether or not there are valid files in the given folder path.
+				boolean isThereFiles = loadFilesIntoList(selectedDirectory.listFiles());
+				if(isThereFiles)
+					createPlayList(directory_path);
+			    }
+		}else if(button == view.getCloseButton())
 			System.out.println("Close button");
-		}
-		else
-		{
-			//Throw an error.
-		}
 	}
 	
 	private boolean loadFilesIntoList(File[] loadedFiles)
