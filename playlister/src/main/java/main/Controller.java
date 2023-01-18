@@ -39,7 +39,8 @@ public class Controller implements EventHandler<ActionEvent>
 		if(button == view.getLoadFileButton())
 		{
 			DirectoryChooser directoryChooser = new DirectoryChooser();
-			directoryChooser.setInitialDirectory(new File("C:\\Users\\raman\\OneDrive\\Desktop\\New_Music"));
+			//This line can be used to define the initial start up folder.
+			//directoryChooser.setInitialDirectory(new File("path"));
             File selectedDirectory = directoryChooser.showDialog(view.getScene().getWindow());
             if(selectedDirectory != null)
             {
